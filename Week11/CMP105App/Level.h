@@ -2,16 +2,25 @@
 
 #include <SFML/Graphics.hpp>
 #include "Framework/Input.h"
+#include "Framework/TileMap.h"
 #include "Framework/AudioManager.h"
 #include "Framework/GameState.h"
+#include "TileSet.h"
+#include "Player.h"
 #include <string>
 #include <iostream>
 
 
 class Level{
 public:
-	Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud);
+	Level();
 	~Level();
+
+	//Setters
+	void setInput(Input* input);
+	void setWindow(sf::RenderWindow* window);
+	void setAudioManager(AudioManager* audioManager);
+	void setGameState(GameState* gameState);
 
 	void handleInput(float dt);
 	void update(float dt);
@@ -25,6 +34,9 @@ private:
 	// Default variables for level class.
 	sf::RenderWindow* window;
 	Input* input;
+	AudioManager* audioManager;
 	GameState* gameState;
-	AudioManager* audio;
+	Manager manager;
+	TileSet tileSet;
+	TileMap tileMap;
 };

@@ -1,14 +1,24 @@
 #include "Level.h"
 
-Level::Level(sf::RenderWindow* hwnd, Input* in, GameState* gs, AudioManager* aud)
+Level::Level()
 {
-	window = hwnd;
-	input = in;
-	gameState = gs;
-	audio = aud;
-
 	// initialise game objects
-	audio->addMusic("sfx/cantina.ogg", "cantina");
+	manager.setInput(input);
+	manager.setWindow(window);
+	manager.spawn(new Player);
+	tileMap.setManager(&manager);
+	tileMap.setTileSize(32, 32);
+	tileMap.setTileSet(tileSet.getTiles());
+	std::vector<int> map {
+	47, 47, 47, 47, 47,
+	47, 47, 3, 47, 47,
+	0, 1, 13, 1, 2,
+	12, 13, 13, 13, 14,
+	12, 13, 13, 13, 14
+	};
+	tileMap.setTileMap(map, sf::Vector2u(5, 5));
+	tileMap.setPosition(sf::Vector2f(0, 408));
+	tileMap.buildLevel();
 }
 
 Level::~Level()
@@ -16,23 +26,40 @@ Level::~Level()
 
 }
 
+//Setters
+void Level::setInput(Input* input) {
+	this->input = input;
+}
+
+void Level::setWindow(sf::RenderWindow* window) {
+	this->window = window;
+}
+
+void Level::setAudioManager(AudioManager* audioManager) {
+	this->audioManager = audioManager;
+}
+
+void Level::setGameState(GameState* gameState) {
+	this->gameState = gameState;
+}
+
 // handle user input
 void Level::handleInput(float dt)
 {
-
+	manager.handleInput(dt);
 }
 
 // Update game objects
 void Level::update(float dt)
 {
-	
+	manager.update(dt);
 }
 
 // Render level
 void Level::render()
 {
 	beginDraw();
-
+	manager.render();
 	endDraw();
 }
 

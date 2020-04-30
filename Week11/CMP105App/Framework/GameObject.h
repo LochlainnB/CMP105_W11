@@ -7,6 +7,7 @@
 #pragma once
 #include "SFML\Graphics.hpp"
 #include "Input.h"
+#include "Enums.h"
 
 class GameObject : public sf::RectangleShape
 {
@@ -38,6 +39,17 @@ public:
 	// Set the input component
 	void setInput(Input* in) { input = in; };
 
+	// Extra setting stuff for compatibility with manager
+	void setWindow(sf::RenderWindow* window);
+	void setEntities(std::vector<GameObject*>* entities);
+	void setTiles(std::vector<GameObject>* tiles);
+
+	// Set name of entity
+	void setName(ObjectName name);
+
+	// Get name of entity
+	ObjectName getName();
+
 protected:
 	// Sprite properties
 	sf::Vector2f velocity;
@@ -49,4 +61,12 @@ protected:
 
 	// input component
 	Input* input;
+
+	// Window and entities
+	sf::RenderWindow* window;
+	std::vector<GameObject*>* entities;
+	std::vector<GameObject>* tiles;
+
+	// Name
+	ObjectName name = TERRAIN;
 };
