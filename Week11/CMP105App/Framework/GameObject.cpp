@@ -3,6 +3,11 @@
 GameObject::GameObject()
 {
 	input = nullptr;
+	setSize(sf::Vector2f(32, 32));
+	setCollisionBox(sf::FloatRect(0, 0, 32, 32));
+	setCollider(true);
+	setName(ObjectName::TERRAIN);
+	setAlive(true);
 }
 
 GameObject::~GameObject()
@@ -60,14 +65,19 @@ void GameObject::setEntities(std::vector<GameObject*>* entities) {
 	this->entities = entities;
 }
 
-void GameObject::setTiles(std::vector<GameObject>* tiles) {
-	this->tiles = tiles;
-}
-
 void GameObject::setName(ObjectName name) {
 	this->name = name;
 }
 
 ObjectName GameObject::getName() {
 	return name;
+}
+
+void GameObject::setTextureManager(TextureManager* textureManager) {
+	this->textureManager = textureManager;
+	this->setTexture(textureManager->getTexture(TextureName::TERRAIN));
+}
+
+void GameObject::setAudioManager(AudioManager* audioManager) {
+	this->audioManager = audioManager;
 }

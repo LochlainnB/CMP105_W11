@@ -7,29 +7,51 @@ Manager::Manager() {
 
 Manager::~Manager() {
 	for (int i = 0; i < entities.size(); i++) {
-		delete entities[0];
+		delete entities[i];
 	}
 }
 
 void Manager::setInput(Input* input) {
 	this->input = input;
+	for (int i = 0; i < entities.size(); i++) {
+		entities[i]->setInput(input);
+	}
 }
 
 void Manager::setWindow(sf::RenderWindow* window) {
 	this->window = window;
+	for (int i = 0; i < entities.size(); i++) {
+		entities[i]->setWindow(window);
+	}
 }
 
-void Manager::spawn(GameObject* object) {
+void Manager::setTextureManager(TextureManager* textureManager) {
+	this->textureManager = textureManager;
+	for (int i = 0; i < entities.size(); i++) {
+		entities[i]->setTextureManager(textureManager);
+	}
+}
+
+void Manager::setAudioManager(AudioManager* audioManager) {
+	this->audioManager = audioManager;
+	for (int i = 0; i < entities.size(); i++) {
+		entities[i]->setAudioManager(audioManager);
+	}
+}
+
+void Manager::spawn(GameObject* object, float positionX, float positionY) {
+	spawn(object, sf::Vector2f(positionX, positionY));
+}
+
+void Manager::spawn(GameObject* object, sf::Vector2f position) {
 	entities.push_back(object);
+	entities[entities.size() - 1]->setPosition(position);
 	entities[entities.size() - 1]->setWindow(window);
 	entities[entities.size() - 1]->setInput(input);
 	entities[entities.size() - 1]->setEntities(&entities);
-	entities[entities.size() - 1]->setTiles(&tiles);
+	entities[entities.size() - 1]->setTextureManager(textureManager);
+	entities[entities.size() - 1]->setAudioManager(audioManager);
 	entities[entities.size() - 1]->setAlive(true);
-}
-
-void Manager::spawnTile(GameObject tile) {
-	tiles.push_back(tile);
 }
 
 void Manager::update(float dt) {
@@ -43,9 +65,16 @@ void Manager::update(float dt) {
 	}
 }
 
+void Manager::deleteEntities() {
+	for (int i = 0; i < entities.size(); i++) {
+		delete entities[i];
+	}
+	entities.clear();
+}
+
 void Manager::handleInput(float dt) {
 	//self
-	
+
 	//entities
 	for (int i = 0; i < entities.size(); i++) {
 		entities[i]->handleInput(dt);
@@ -55,8 +84,5 @@ void Manager::handleInput(float dt) {
 void Manager::render() {
 	for (int i = 0; i < entities.size(); i++) {
 		window->draw(*entities[i]);
-	}
-	for (int i = 0; i < tiles.size(); i++) {
-		window->draw(tiles[i]);
 	}
 }

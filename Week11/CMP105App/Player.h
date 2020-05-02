@@ -10,6 +10,7 @@ public:
 	void setAcceleration(sf::Vector2f acceleration);
 	void setAcceleration(float accelerationX, float accelerationY);
 	sf::Vector2f getAcceleration();
+	void setTextureManager(TextureManager* textureManager) override;
 
 	void handleInput(float dt) override;
 	void update(float dt) override;

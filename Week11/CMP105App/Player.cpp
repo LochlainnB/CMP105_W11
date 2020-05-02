@@ -5,11 +5,9 @@ Player::Player() {
 	setSize(sf::Vector2f(32, 32));
 	setCollisionBox(sf::FloatRect(0, 0, 32, 32));
 	setCollider(true);
-	setName(PLAYER);
+	setName(ObjectName::PLAYER);
 	acceleration = sf::Vector2f(0, 980);
 	setAlive(true);
-	texture.loadFromFile("gfx/MushroomTrans.png");
-	setTexture(&texture);
 }
 
 Player::~Player() {
@@ -36,6 +34,7 @@ void Player::handleInput(float dt) {
 	if (input->isKeyDown(22)) {
 		velocity.y = -400;
 		input->setKeyUp(22);
+		audioManager->playSoundbyName("jump");
 	}
 	if (input->isKeyDown(0)) {
 		velocity.x = -200;
@@ -46,13 +45,19 @@ void Player::handleInput(float dt) {
 }
 
 void Player::update(float dt) {
+	//max gravity
+	if (velocity.y > 1000) {
+		velocity.y = 1000;
+	}
+
+	//set position
 	setPosition(getPosition() + velocity * dt);
 
 	//check collisions
-	for (int i = 0; i < tiles->size(); i++) {
-		if ((*tiles)[i].getName() == TERRAIN && (*tiles)[i].isCollider()) {
-			if (Collision::checkBoundingBox(this, &(*tiles)[i])) {
-				collisionResponse(&(*tiles)[i]);
+	for (int i = 0; i < entities->size(); i++) {
+		if ((*entities)[i]->getName() == ObjectName::TERRAIN && (*entities)[i]->isCollider()) {
+			if (Collision::checkBoundingBox(this, (*entities)[i])) {
+				collisionResponse((*entities)[i]);
 			}
 		}
 	}
@@ -60,7 +65,7 @@ void Player::update(float dt) {
 
 void Player::collisionResponse(GameObject* other) {
 	//collision with terrain
-	if (other->getName() == TERRAIN) {
+	if (other->getName() == ObjectName::TERRAIN) {
 		//get overlap in X and Y. If overlap greater in X, colliding with top or bottom. Y is opposite
 		float lowestX = getPosition().x + getCollisionBox().left;
 		float highestX = lowestX + getCollisionBox().width;
@@ -102,7 +107,7 @@ void Player::collisionResponse(GameObject* other) {
 		}
 		float overlapY = lowestHighY - highestLowY;
 
-		if (overlapX < overlapY) {
+		if (overlapX <= overlapY + 1) {
 			//check left or right
 			if (getPosition().x + (getCollisionBox().left - getPosition().y) + getCollisionBox().width / 2 > other->getPosition().x + (other->getCollisionBox().left - other->getPosition().y) + other->getCollisionBox().width / 2) {
 				setPosition((other->getCollisionBox().left + other->getCollisionBox().width) - (getCollisionBox().left - getPosition().x), getPosition().y);
@@ -110,18 +115,29 @@ void Player::collisionResponse(GameObject* other) {
 			else {
 				setPosition(other->getCollisionBox().left - other->getCollisionBox().width, getPosition().y);
 			}
-			velocity.x = 0;
 			
 		}
 		else {
 			//check top or bottom
 			if (getPosition().y + (getCollisionBox().top - getPosition().x) + getCollisionBox().height / 2 > other->getPosition().y + (other->getCollisionBox().top - other->getPosition().x) + other->getCollisionBox().height / 2) {
+				//bottom
 				setPosition(getPosition().x, (other->getCollisionBox().top + other->getCollisionBox().height) - (getCollisionBox().top - getPosition().y));
+				if (velocity.y < 0) {
+					velocity.y = 0;
+				}
 			}
 			else {
+				//top
 				setPosition(getPosition().x, other->getCollisionBox().top - other->getCollisionBox().height);
+				if (velocity.y > 0) {
+					velocity.y = 0;
+				}
 			}
-			velocity.y = 0;
 		}
 	}
+}
+
+void Player::setTextureManager(TextureManager* textureManager) {
+	this->textureManager = textureManager;
+	setTexture(textureManager->getTexture(TextureName::PLAYER));
 }

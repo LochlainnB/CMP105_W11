@@ -8,6 +8,8 @@
 #include "SFML\Graphics.hpp"
 #include "Input.h"
 #include "Enums.h"
+#include "..//TextureManager.h"
+#include "AudioManager.h"
 
 class GameObject : public sf::RectangleShape
 {
@@ -42,7 +44,12 @@ public:
 	// Extra setting stuff for compatibility with manager
 	void setWindow(sf::RenderWindow* window);
 	void setEntities(std::vector<GameObject*>* entities);
-	void setTiles(std::vector<GameObject>* tiles);
+
+	// Set texture manager. Overwritten by descendants to set the desired texture
+	virtual void setTextureManager(TextureManager* textureManager);
+
+	// Set audio manager
+	void setAudioManager(AudioManager* audioManager);
 
 	// Set name of entity
 	void setName(ObjectName name);
@@ -57,16 +64,23 @@ protected:
 
 	// Collision vars
 	sf::FloatRect collisionBox;
-	bool collider;
+	bool collider = true;
 
 	// input component
 	Input* input;
 
-	// Window and entities
+	// Window
 	sf::RenderWindow* window;
+
+	// Entities
 	std::vector<GameObject*>* entities;
-	std::vector<GameObject>* tiles;
+
+	// Texture Manager
+	TextureManager* textureManager;
+
+	// Audio Manager
+	AudioManager* audioManager;
 
 	// Name
-	ObjectName name = TERRAIN;
+	ObjectName name;
 };

@@ -5,7 +5,6 @@
 #include "Framework/TileMap.h"
 #include "Framework/AudioManager.h"
 #include "Framework/GameState.h"
-#include "TileSet.h"
 #include "Player.h"
 #include <string>
 #include <iostream>
@@ -13,14 +12,17 @@
 
 class Level{
 public:
-	Level();
+	Level(std::vector<int> map, sf::Vector2u mapSize);
 	~Level();
 
 	//Setters
 	void setInput(Input* input);
 	void setWindow(sf::RenderWindow* window);
+	void setTextureManager(TextureManager* textureManager);
 	void setAudioManager(AudioManager* audioManager);
 	void setGameState(GameState* gameState);
+
+	void buildLevel();
 
 	void handleInput(float dt);
 	void update(float dt);
@@ -34,9 +36,9 @@ private:
 	// Default variables for level class.
 	sf::RenderWindow* window;
 	Input* input;
+	TextureManager* textureManager;
 	AudioManager* audioManager;
 	GameState* gameState;
 	Manager manager;
-	TileSet tileSet;
 	TileMap tileMap;
 };

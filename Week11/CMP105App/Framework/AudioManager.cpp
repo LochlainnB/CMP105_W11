@@ -49,7 +49,7 @@ sf::Sound* AudioManager::getSound(std::string lname)
 	{
 		if (sounds[i].name == lname)
 		{
-			return &sounds[i].sound;
+			//return &sounds[i].sound;
 		}
 	}
 	return nullptr;

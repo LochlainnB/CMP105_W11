@@ -7,6 +7,8 @@
 #include <math.h>
 #include "GameObject.h"
 #include "..//Manager.h"
+//game objects
+#include "..//Player.h"
 
 class TileMap
 {
@@ -14,8 +16,6 @@ public:
 	TileMap();
 	~TileMap();
 
-	// Receives an array of GameObjects representing the tile set (in order)
-	void setTileSet(std::vector<GameObject> ts);
 	// Receives and array of integers and map dimensions representing the map (where and what tiles to place).
 	void setTileMap(std::vector<int> tm, sf::Vector2u mapDimensions);
 	// Sets tile size (note that this isn't the size of the actual tiles, but the distance between their origins)
@@ -32,7 +32,6 @@ public:
 	void setManager(Manager* manager);
 
 protected:
-	std::vector<GameObject> tileSet;
 	std::vector<int> tileMap;
 	sf::Vector2f tileSize;
 	sf::Texture texture;

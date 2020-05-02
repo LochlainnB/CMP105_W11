@@ -1,24 +1,13 @@
 #include "Level.h"
 
-Level::Level()
+Level::Level(std::vector<int> map, sf::Vector2u mapSize)
 {
 	// initialise game objects
-	manager.setInput(input);
-	manager.setWindow(window);
-	manager.spawn(new Player);
+	manager.setAudioManager(audioManager);
 	tileMap.setManager(&manager);
 	tileMap.setTileSize(32, 32);
-	tileMap.setTileSet(tileSet.getTiles());
-	std::vector<int> map {
-	47, 47, 47, 47, 47,
-	47, 47, 3, 47, 47,
-	0, 1, 13, 1, 2,
-	12, 13, 13, 13, 14,
-	12, 13, 13, 13, 14
-	};
-	tileMap.setTileMap(map, sf::Vector2u(5, 5));
-	tileMap.setPosition(sf::Vector2f(0, 408));
-	tileMap.buildLevel();
+	tileMap.setTileMap(map, mapSize);
+	tileMap.setPosition(sf::Vector2f(0, 0));
 }
 
 Level::~Level()
@@ -29,18 +18,32 @@ Level::~Level()
 //Setters
 void Level::setInput(Input* input) {
 	this->input = input;
+	manager.setInput(input);
 }
 
 void Level::setWindow(sf::RenderWindow* window) {
 	this->window = window;
+	manager.setWindow(window);
+}
+
+void Level::setTextureManager(TextureManager* textureManager) {
+	this->textureManager = textureManager;
+	manager.setTextureManager(textureManager);
 }
 
 void Level::setAudioManager(AudioManager* audioManager) {
 	this->audioManager = audioManager;
+	manager.setAudioManager(audioManager);
 }
 
 void Level::setGameState(GameState* gameState) {
 	this->gameState = gameState;
+}
+
+//(re)build the level
+void Level::buildLevel() {
+	manager.deleteEntities();
+	tileMap.buildLevel();
 }
 
 // handle user input
